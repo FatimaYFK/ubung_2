@@ -16,6 +16,8 @@ DER Format](#der)
   - [Erstellen eines passwortgesicherten RSA Private Key (3072 bit)](#rsa)
   - [Konvertierung des oben erzeugten RSA Schlüssels in ein unverschlüsseltes
 Format](#rsa1)
+- [Reference](#ref)
+___
 
 ## Voraussetzungen
   - _openssl_ mit dem Kommandozeilentool
@@ -179,7 +181,7 @@ openssl pkcs12 -export -inkey private-key.pem -in cert.pem -out cert.pfx
 <a name="rsa1"></a>
 ### Konvertierung des oben erzeugten RSA Schlüssels in ein unverschlüsseltes Format
 
-````
+```
 openssl rsa -in privkey.pem -out public.pem -outform PEM -pubout
 
 # or
@@ -200,3 +202,17 @@ openssl rsautl -decrypt -inkey private.pem -in file.ssl -out decrypted.txt
 # Und jetzt eine unverschlüsselte Datei in decrypted.txt:
 cat decrypted.txt | output -> too many secrets
 ```
+
+<a name="ref"></a>
+## Reference
+
+- <https://www.suse.com/support/kb/doc/?id=000018152>
+- <https://www.entrust.com/knowledgebase/ssl/how-do-i-convert-my-pem-certificate-to-a-der-certificate-format>
+- <https://raymii.org/s/articles/OpenSSL_Manually_Verify_a_certificate_against_an_OCSP.html>
+- <https://stackoverflow.com/questions/4294689/how-to-generate-an-openssl-key-using-a-passphrase-from-the-command-line>
+- <https://www.scottbrady91.com/openssl/creating-rsa-keys-using-openssl>
+- <https://medium.com/@nirmaluchoudhari/converting-certificates-using-openssl-9957a743c66b>
+- <https://stackoverflow.com/questions/65882840/crl-validity-openssl>
+- <https://www.makeuseof.com/create-self-signed-certificate-linux/>
+- <https://superuser.com/questions/1103401/generate-an-ecdsa-key-and-csr-with-openssl>
+- <https://www.scottbrady91.com/openssl/creating-elliptical-curve-keys-using-openssl>
