@@ -137,15 +137,66 @@ openssl req -new -sha256 -key cert.pem -out cert.csr
 ![image](https://user-images.githubusercontent.com/59235025/194768002-209adc02-1975-4994-9224-54775e6990a3.png)
 
 
+<a name="der"></a>
+### Konvertieren eines Zertifikates vom textuellen PEM Format in ein binäres DER Format
 
+```
+openssl x509 -in cert.pem -out cert.der -outform DER
+```
 
+![image](https://user-images.githubusercontent.com/59235025/194769679-de892cb1-f47a-4918-a0b6-5d2ec3e94114.png)
 
+<a name="rsa"></a>
+### Erstellen eines passwortgesicherten RSA Private Key (3072 bit)
 
+Entweder:
 
+```
+openssl genrsa -aes128 -passout pass:foobar -out privkey.pem 3072
+openssl rsa -in privkey.pem -passin pass:foobar -pubout -out privkey.pub
+```
+![image](https://user-images.githubusercontent.com/59235025/194769797-9ef810ec-cc2d-4382-9a6b-c8f02a577853.png)
+![image](https://user-images.githubusercontent.com/59235025/194769810-1a84967a-ea8d-4c2e-962e-d97ff2e7793f.png)
+![image](https://user-images.githubusercontent.com/59235025/194769834-955949ad-4e0b-4ca2-bca3-b64c0833b4d9.png)
 
+oder
 
+```
+# Generiere einen privaten Schlüssel mit der richtigen Länge
+openssl genrsa -out private-key.pem 3072
 
+# entsprechenden öffentlichen Schlüssel generieren
+openssl rsa -in private-key.pem -pubout -out public-key.pem
 
+# Optional: ein selbstsigniertes Zertifikat erstellen
+openssl req -new -x509 -key private-key.pem -out cert.pem -days 730
 
+# optional: convert pem to pfx
+openssl pkcs12 -export -inkey private-key.pem -in cert.pem -out cert.pfx
+```
+![image](https://user-images.githubusercontent.com/59235025/194769900-cf32fe2f-7753-42fc-9d3a-55ce3e7cba6d.png)
 
+<a name="rsa1"></a>
+### Konvertierung des oben erzeugten RSA Schlüssels in ein unverschlüsseltes Format
 
+````
+openssl rsa -in privkey.pem -out public.pem -outform PEM -pubout
+
+# or
+openssl rsa -in privkey.pem -pubout > public.pem
+
+# or
+openssl rsa -in privkey.pem -pubout -out public.pem
+
+# Eine text datei erstellen
+echo 'too many secrets' > file.txt
+
+# Jetzt haben Sie einige Daten in file.txt, lassen Sie sie mit OpenSSL und öffentlichem Schlüssel verschlüsseln
+openssl rsautl -encrypt -inkey public.pem -pubin -in file.txt -out file.ssl
+
+# Jetzt können Sie es mit dem privaten Schlüssel entschlüsseln
+openssl rsautl -decrypt -inkey private.pem -in file.ssl -out decrypted.txt
+
+# Und jetzt eine unverschlüsselte Datei in decrypted.txt:
+cat decrypted.txt | output -> too many secrets
+```
